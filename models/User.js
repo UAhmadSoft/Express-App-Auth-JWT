@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
   activated: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 });
 
@@ -78,13 +78,19 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.createAccountActivationLink = function () {
   const activationToken = crypto.randomBytes(32).toString('hex');
   // console.log(activationToken);
-  this.activationLink = crypto.createHash('sha256').update(activationToken).digest('hex');
+  this.activationLink = crypto
+    .createHash('sha256')
+    .update(activationToken)
+    .digest('hex');
   // console.log({ activationToken }, this.activationLink);
   return activationToken;
 };
 
 // comparing password
-userSchema.methods.correctPassword = async function (candidate_Password, user_Password) {
+userSchema.methods.correctPassword = async function (
+  candidate_Password,
+  user_Password
+) {
   console.log(candidate_Password);
   return await bcrypt.compare(candidate_Password, user_Password);
 };
@@ -94,7 +100,10 @@ userSchema.methods.createPasswordResetToken = function () {
 
   console.log(resetToken);
 
-  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
 
   // console.log({ resetToken }, this.passwordResetToken);
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
