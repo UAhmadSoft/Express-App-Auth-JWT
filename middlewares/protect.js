@@ -25,6 +25,6 @@ module.exports = catchAsync(async (req, res, next) => {
   if (!user)
     return next(new AppError('User not exists with this token', 400));
 
-  req.user = currentUser;
+  req.user = user;
   next();
 });
